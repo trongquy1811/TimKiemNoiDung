@@ -3,30 +3,40 @@ from pathlib import Path
 
 from pypdf import PdfReader
 
+from .config import UPLOADS_DIR
 from .preprocessing import split_text
 
 
-def extract_pdf_text_and_images(pdf_path, uploads_dir: Path, existing_images: list[str] | None = None):
+def extract_pdf_text_and_images(pdf_path, uploads_dir: Path = UPLOADS_DIR, pdf_extracted_images: list[str] | None = None):
+    """
+    Extracts text page-by-page.
+    If a page is scanned (no text), extracts images embedded in the page for Vision OCR.
+    """
+    pdf_path = Path(pdf_path)
+    uploads_dir = Path(uploads_dir)
     reader = PdfReader(str(pdf_path))
     nodes = []
     counter = 0
     scanned_pages = []
-    extracted_images = list(existing_images or [])
 
     for page_index, page in enumerate(reader.pages, start=1):
         page_text = page.extract_text() or ""
 
+        # Detect potential scanned page
         if not page_text.strip() or len(page_text.strip()) < 50:
             scanned_pages.append(page_index)
+            # Try to extract page images
             for img_idx, img_file in enumerate(page.images, start=1):
                 try:
                     img_bytes = img_file.data
                     ext = Path(img_file.name).suffix or ".png"
-                    img_name = f"{Path(pdf_path).stem}_page{page_index}_img{img_idx}{ext}"
+                    img_name = f"{pdf_path.stem}_page{page_index}_img{img_idx}{ext}"
                     img_path = uploads_dir / img_name
                     img_path.write_bytes(img_bytes)
-                    if str(img_path) not in extracted_images:
-                        extracted_images.append(str(img_path))
+                    img_str = str(img_path)
+
+                    if pdf_extracted_images is not None and img_str not in pdf_extracted_images:
+                        pdf_extracted_images.append(img_str)
                 except Exception:
                     pass
 
@@ -36,14 +46,14 @@ def extract_pdf_text_and_images(pdf_path, uploads_dir: Path, existing_images: li
             nodes.append({
                 "node_id": str(counter).zfill(4),
                 "title": f"Page {page_index}",
-                "path": f"{Path(pdf_path).name} > Page {page_index} > Chunk {chunk_index}",
-                "source_file": Path(pdf_path).name,
+                "path": f"{pdf_path.name} > Page {page_index} > Chunk {chunk_index}",
+                "source_file": pdf_path.name,
                 "page": page_index,
                 "chunk": chunk_index,
                 "text": chunk,
             })
 
-    return nodes, scanned_pages, extracted_images
+    return nodes, scanned_pages
 
 
 def extract_txt_nodes(file_path):
@@ -96,9 +106,11 @@ def add_text_to_nodes(nodes, lines):
     for i, node in enumerate(nodes):
         start = node["line_num"]
         end = nodes[i + 1]["line_num"] - 1 if i + 1 < len(nodes) else len(lines)
+
         node["start_line"] = start
         node["end_line"] = end
         node["text"] = "\n".join(lines[start - 1:end]).strip()
+
     return nodes
 
 
@@ -173,14 +185,12 @@ def parse_markdown(file_path):
     return flatten_tree(nodes=tree, source_file=file_path.name)
 
 
-def parse_document(file_path, uploads_dir: Path | None = None):
+def parse_document(file_path, uploads_dir: Path = UPLOADS_DIR):
     file_path = Path(file_path)
     suffix = file_path.suffix.lower()
 
     if suffix == ".pdf":
-        if uploads_dir is None:
-            uploads_dir = file_path.parent
-        nodes, _, _ = extract_pdf_text_and_images(file_path, uploads_dir)
+        nodes, _ = extract_pdf_text_and_images(file_path, uploads_dir)
         return nodes
 
     if suffix in [".md", ".markdown"]:
@@ -190,3 +200,4 @@ def parse_document(file_path, uploads_dir: Path | None = None):
         return extract_txt_nodes(file_path)
 
     return []
+

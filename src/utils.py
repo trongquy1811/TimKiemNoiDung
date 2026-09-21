@@ -1,6 +1,8 @@
 import hashlib
 from pathlib import Path
 
+from .config import UPLOADS_DIR
+
 
 def get_file_hash(file_bytes: bytes) -> str:
     return hashlib.md5(file_bytes).hexdigest()
@@ -10,7 +12,7 @@ def safe_filename(filename: str) -> str:
     return filename.replace("/", "_").replace("\\", "_")
 
 
-def save_uploaded_file(uploaded_file, uploads_dir: Path) -> Path:
+def save_uploaded_file(uploaded_file, uploads_dir: Path = UPLOADS_DIR) -> Path:
     uploads_dir.mkdir(exist_ok=True)
     file_bytes = uploaded_file.getvalue()
     file_hash = get_file_hash(file_bytes)
@@ -29,3 +31,4 @@ def get_mime_type(path) -> str:
     if suffix == ".png":
         return "image/png"
     return "application/octet-stream"
+

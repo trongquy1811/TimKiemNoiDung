@@ -4,6 +4,11 @@ import time
 import google.generativeai as genai
 from PIL import Image
 
+try:
+    import streamlit as st
+except ImportError:
+    st = None
+
 
 def ask_gemini_vision(question: str, image_paths: list[str], model_name: str, api_key: str) -> str:
     genai.configure(api_key=api_key)
@@ -115,6 +120,8 @@ def ask_gemini(
             error_text = str(e)
             if "503" in error_text or "overloaded" in error_text.lower():
                 wait_time = 2 * (attempt + 1)
+                if st is not None:
+                    st.warning(f"Mô hình Gemini đang quá tải. Đang thử lại tự động sau {wait_time}s...")
                 time.sleep(wait_time)
                 continue
             if "429" in error_text:
@@ -124,3 +131,4 @@ def ask_gemini(
             raise e
 
     raise Exception("Mô hình Gemini phản hồi quá tải sau nhiều lần thử lại.")
+
