@@ -4,3 +4,4 @@ pageindex/.env
 uploads/
 results/
 __pycache__/
+secrets.toml
