@@ -1,132 +1,391 @@
-# 📄 DocAnalyzer AI Pro - Tìm Kiếm Nội Dung & Phân Tích Tài Liệu Thông Minh
+# 📄 DocAnalyzer AI Pro
 
 <p align="center">
-  <b>Hệ thống phân tích tài liệu và hình ảnh đa phương thức sử dụng Streamlit, Gemini RAG & Vision API.</b>
+  <b>AI-powered document analysis, semantic search, and Retrieval-Augmented Generation (RAG) system built with LangChain, LangGraph, Google Gemini, and Streamlit.</b>
 </p>
 
 <p align="center">
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python" alt="Python"></a>
-  <a href="https://streamlit.io/"><img src="https://img.shields.io/badge/Streamlit-1.30+-red?style=for-the-badge&logo=streamlit" alt="Streamlit"></a>
-  <a href="https://ai.google.dev/"><img src="https://img.shields.io/badge/Gemini-AI%20Pro-orange?style=for-the-badge&logo=google-gemini" alt="Gemini"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python" alt="Python"></a>
+  <a href="https://streamlit.io/"><img src="https://img.shields.io/badge/Streamlit-1.58%2B-red?style=for-the-badge&logo=streamlit" alt="Streamlit"></a>
+  <a href="https://www.langchain.com/"><img src="https://img.shields.io/badge/LangChain-RAG-green?style=for-the-badge" alt="LangChain"></a>
+  <a href="https://langchain-ai.github.io/langgraph/"><img src="https://img.shields.io/badge/LangGraph-Workflow-purple?style=for-the-badge" alt="LangGraph"></a>
+  <a href="https://ai.google.dev/"><img src="https://img.shields.io/badge/Google%20Gemini-LLM-orange?style=for-the-badge&logo=google" alt="Gemini"></a>
 </p>
 
 ---
 
-## ✨ Tính Năng Nổi Bật (Key Features)
+## 🚀 Overview
 
-### 🧠 Pipeline RAG Nâng Cao & Tìm Kiếm Ngữ Nghĩa (Hybrid RAG)
-* **Semantic Search (Gemini Embeddings):** Sử dụng mô hình `models/text-embedding-004` của Google để trích xuất Vector Embeddings mật độ cao, giúp khớp ngữ cảnh theo ý nghĩa thay vì chỉ khớp từ khóa.
-* **Xếp hạng Cosine Similarity:** Xếp hạng các đoạn văn bản (chunks) chính xác và nhanh chóng dựa trên thuật toán Cosine Similarity tối ưu bằng NumPy.
-* **Cơ chế Auto-Fallback:** Tự động chuyển sang thuật toán tìm kiếm theo từ khóa (Keyword Search) nếu mất kết nối hoặc hết hạn ngạch (quota) API Gemini, đảm bảo ứng dụng hoạt động không gián đoạn.
+**DocAnalyzer AI Pro** is an AI-powered document search and analysis application designed to combine **semantic search, Retrieval-Augmented Generation (RAG), and multimodal document understanding**.
 
-### 🖼️ Xử Lý PDF Quét & Đa Phương Thức (Smart Scanned PDF OCR)
-* **Nhận diện trang PDF quét:** Tự động quét tài liệu PDF từng trang. Nếu phát hiện trang tài liệu dạng quét/ảnh (không trích xuất được text), hệ thống tự động tách xuất các tệp ảnh ẩn trong trang.
-* **Trích xuất ảnh không phụ thuộc thư viện C++:** Sử dụng `pypdf.page.images` thuần Python để trích xuất ảnh trên các trang PDF scan và truyền trực tiếp vào **Gemini Vision API** mà không cần cài đặt Poppler/PDF2Image phức tạp.
-* **Phân tích hình ảnh trực quan (Gemini Vision):** Hỗ trợ phân tích ảnh chụp, biểu đồ, hình ảnh y tế (như điện tâm đồ ECG), hình ảnh tài liệu...
+Users can upload PDF, TXT, Markdown, and image-based documents, then interact with the content through a conversational interface.
 
-### 🎨 Giao Diện Glassmorphism Sang Trọng & Tối Ưu State
-* **Typography Outfit:** Tích hợp phông chữ hiện đại Google Fonts Outfit.
-* **Bong bóng chat Glassmorphism:** Hiệu ứng làm mờ kính cường lực cao cấp, gradient chuyển màu xanh dương ấn tượng cho người dùng và màu slate tối cho AI.
-* **Quản lý Streamlit State ổn định:** Khắc phục hoàn toàn lỗi rerun của Streamlit khi chat. Khu vực xem trước hình ảnh (Preview) và danh sách context được giữ nguyên trên màn hình.
-* **Bảng điều khiển Sidebar linh hoạt:** Dễ dàng thay đổi API Key, chọn dòng mô hình Gemini (`gemini-2.5-flash`, `gemini-1.5-pro`, `gemini-2.0-flash-exp`), tùy chỉnh Temperature, Tokens limit, số lượng Top-K context, dọn dẹp lịch sử chat và nhật ký câu hỏi.
+The application uses **LangChain** to build the RAG components and **LangGraph** to orchestrate the overall question-answering workflow.
 
----
+### Core Workflow
 
-## 🛠️ Công Nghệ Sử Dụng (Tech Stack)
-
-* **Giao diện & Web App:** [Streamlit](https://streamlit.io/)
-* **Mô hình Trí tuệ Nhân tạo (LLM & Vision):** [Google Generative AI SDK](https://ai.google.dev/) (`gemini-2.5-flash`, `gemini-1.5-pro`, `gemini-2.0-flash-exp`, `models/text-embedding-004`)
-* **Xử lý tài liệu & văn bản:** PyPDF (`pypdf`), Regex, Splitter
-* **Xử lý số liệu & Hình ảnh:** NumPy, Pillow (`PIL`)
-* **Ngôn ngữ lập trình:** Python 3.11+
-
----
-
-## 📂 Cấu Trúc Dự Án (Project Structure)
-
-```bash
-TimKiemNoiDung/
-├── app.py                   # Giao diện chính Streamlit Web App & Chat Interface
-├── src/                     # Thư viện mô-đun hóa hỗ trợ backend
-│   ├── __init__.py          # Export các hàm và hằng số chính của gói src
-│   ├── config.py            # Đường dẫn tĩnh, danh sách model và cấu hình hệ thống
-│   ├── dataset.py           # Bộ đọc và phân đoạn dữ liệu (PDF, Markdown, TXT)
-│   ├── inference.py         # Hàm gọi API Gemini (Text QA & Gemini Vision OCR)
-│   ├── preprocessing.py    # Thuật toán cắt nhỏ văn bản (Text Chunking with Overlap)
-│   ├── rag.py               # Thuật toán RAG (Semantic Search & Keyword Search)
-│   └── utils.py             # Hàm băm MD5 tệp và lưu trữ upload
-├── uploads/                 # Thư mục chứa tài liệu upload và ảnh trích xuất tạm thời
-├── requirements.txt         # Danh sách thư viện Python cần thiết
-├── runtime.txt              # Đinh dạng phiên bản Python runtime
-├── Dockerfile               # File đóng gói môi trường Docker
-├── .devcontainer/           # Cấu hình môi trường devcontainer cho VS Code / GitHub Codespaces
-└── README.md                # Tài liệu hướng dẫn sử dụng chi tiết
+```text
+                    Document
+                       │
+             ┌─────────┴─────────┐
+             │                   │
+        Text Document       Scanned / Image
+             │                   │
+        Text Extraction      Gemini Vision
+             │                   │
+             └─────────┬─────────┘
+                       ↓
+                 Text Chunks
+                       ↓
+              Gemini Embeddings
+                       ↓
+                 FAISS Index
+                       ↓
+                  User Query
+                       ↓
+              LangGraph Workflow
+                       ↓
+                 Retrieval
+                       ↓
+                Context Builder
+                       ↓
+                 Gemini LLM
+                       ↓
+                    Answer
 ```
 
 ---
 
-## 🚀 Hướng Dẫn Cài Đặt & Chạy Ứng Dụng
+## ✨ Key Features
 
-### 1. Yêu cầu tiên quyết
-* Python phiên bản **3.10** hoặc **3.11** (khuyên dùng 3.11).
-* Khóa Gemini API Key từ [Google AI Studio](https://aistudio.google.com/).
+### 🧠 Retrieval-Augmented Generation
 
-### 2. Tải mã nguồn về máy
+* Document-based question answering using RAG.
+* Semantic search using **Gemini Embeddings**.
+* Vector similarity search with **FAISS**.
+* Context-aware answer generation using Google Gemini.
+* Configurable **Top-K retrieval**.
+* Document metadata and source information are preserved throughout the pipeline.
+
+### 🔗 LangChain Integration
+
+LangChain is used as the core framework for building the RAG pipeline:
+
+* `Document` objects for standardized document representation.
+* `RecursiveCharacterTextSplitter` for document chunking.
+* `GoogleGenerativeAIEmbeddings` for vector embeddings.
+* FAISS vector store for similarity search.
+* Retriever abstraction for relevant context retrieval.
+* `ChatGoogleGenerativeAI` for LLM integration.
+
+### 🔄 LangGraph Workflow
+
+LangGraph is used to orchestrate the RAG workflow as a state-based graph.
+
+```text
+User Query
+    ↓
+Query Analysis
+    ↓
+Document Retrieval
+    ↓
+Context Construction
+    ↓
+Answer Generation
+    ↓
+Final Response
+```
+
+This architecture makes the application easier to extend with additional routing logic, validation steps, tools, or agent-based workflows.
+
+### 🔎 Semantic Search
+
+The system converts document chunks and user queries into vector representations and retrieves semantically relevant content instead of relying only on exact keyword matching.
+
+### 🖼️ Multimodal Document Understanding
+
+The application supports image-based content and scanned PDF pages.
+
+* Detects pages with limited or missing text extraction.
+* Extracts images from PDF documents.
+* Sends image content to Gemini Vision for analysis.
+* Supports document images, diagrams, charts, and other visual content.
+
+### 💬 Interactive AI Chat
+
+* Conversational document question answering.
+* Markdown-formatted AI responses.
+* Chat history maintained using Streamlit session state.
+* Context inspection for retrieved document chunks.
+* Configurable model parameters such as temperature and token limits.
+
+### 🎨 Streamlit Interface
+
+* Clean and responsive Streamlit interface.
+* Document upload and preview.
+* Configurable AI settings through the sidebar.
+* Chat-based interaction.
+* Retrieved-context inspection.
+
+---
+
+## 🛠️ Tech Stack
+
+| Category               | Technology        |
+| ---------------------- | ----------------- |
+| Programming Language   | Python            |
+| Web Framework          | Streamlit         |
+| RAG Framework          | LangChain         |
+| Workflow Orchestration | LangGraph         |
+| LLM                    | Google Gemini     |
+| Embeddings             | Gemini Embeddings |
+| Vector Database        | FAISS             |
+| Document Processing    | PyPDF             |
+| Image Processing       | Pillow            |
+| Numerical Computing    | NumPy             |
+| Version Control        | Git / GitHub      |
+
+---
+
+## 🤖 AI Models
+
+The application uses Google Gemini models for both text generation and embeddings.
+
+### Generation
+
+```text
+Gemini 3.6 Flash
+```
+
+### Embeddings
+
+```text
+gemini-embedding-001
+```
+
+The model configuration can be adjusted according to API availability and application requirements.
+
+---
+
+## 📂 Project Structure
+
+```text
+TimKiemNoiDung/
+│
+├── app.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── .streamlit/
+│   └── secrets.toml          # Local secrets - not committed
+│
+└── uploads/                  # Uploaded documents / temporary files
+```
+
+---
+
+## ⚙️ Installation
+
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/trongquy1811/TimKiemNoiDung.git
 cd TimKiemNoiDung
 ```
 
-### 3. Cài đặt các thư viện phụ thuộc
-Khuyên dùng môi trường ảo (`venv`):
+### 2. Create a Virtual Environment
+
+#### Windows
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+#### Linux / macOS
+
 ```bash
-# Tạo và kích hoạt virtual environment
-python -m venv venv
+python -m venv .venv
+source .venv/bin/activate
+```
 
-# Trên Windows Command Prompt / PowerShell:
-.\venv\Scripts\activate
+### 3. Install Dependencies
 
-# Trên Linux / macOS:
-source venv/bin/activate
-
-# Cài đặt thư viện
+```bash
 pip install -r requirements.txt
 ```
 
-### 4. Cấu hình Gemini API Key
-Bạn có thể cấu hình API Key bằng một trong 2 cách sau:
-* **Cách 1 (Khuyên dùng):** Nhập trực tiếp API Key vào ô **🔑 Gemini API Key** trên Sidebar giao diện ứng dụng.
-* **Cách 2:** Tạo file `.streamlit/secrets.toml` trong thư mục gốc dự án với nội dung:
-  ```toml
-  GEMINI_API_KEY = "your_gemini_api_key_here"
-  ```
+---
 
-### 5. Khởi chạy ứng dụng Streamlit
-```bash
-streamlit run app.py
+## 🔑 Configuration
+
+The application requires a **Google Gemini API key**.
+
+Create:
+
+```text
+.streamlit/secrets.toml
 ```
-Sau khi chạy command trên, trình duyệt sẽ tự động mở trang web ứng dụng tại địa chỉ: `http://localhost:8501`.
+
+with:
+
+```toml
+GEMINI_API_KEY = "your_gemini_api_key"
+```
+
+The secrets file is intentionally excluded from Git using `.gitignore`.
+
+> **Security:** Never commit API keys, credentials, or other sensitive information to a public repository.
 
 ---
 
-## 💡 Hướng Dẫn Sử Dụng (Usage Guide)
+## ▶️ Run the Application
 
-1. **Tải tài liệu / hình ảnh:**
-   * Tại vùng **📂 Tải tài liệu hoặc hình ảnh lên**, nhấn hoặc kéo thả các tệp tài liệu (`.pdf`, `.md`, `.txt`) hoặc hình ảnh (`.png`, `.jpg`, `.jpeg`).
-   * Nếu bạn tải lên file PDF bị quét (PDF dạng ảnh scanned), ứng dụng sẽ tự động trích xuất ảnh trên từng trang để xem trước và gửi cho Gemini Vision.
-2. **Cấu hình thuật toán & mô hình (Tại Sidebar bên trái):**
-   * **Chọn mô hình Gemini:** `gemini-2.5-flash` (nhanh & thông minh), `gemini-1.5-pro` (suy luận sâu) hoặc `gemini-2.0-flash-exp`.
-   * **Chọn thuật toán RAG:** `Semantic Search (Gemini Embeddings)` hoặc `Keyword Search (Từ khóa Cục bộ)`.
-   * Điều chỉnh slider **Độ sáng tạo (Temperature)**, **Giới hạn tokens**, **Số lượng ngữ cảnh (Top-K)** tùy nhu cầu.
-3. **Trò chuyện & Trích xuất thông tin:**
-   * Nhập câu hỏi vào ô chat phía dưới màn hình (ví dụ: *"Tóm tắt nội dung chính của tài liệu"*, *"Tìm các thông tin về hợp đồng trong file PDF"* hoặc *"Phân tích hình ảnh này giúp tôi"*).
-   * AI sẽ trả lời chi tiết dưới dạng Markdown đẹp mắt.
-   * Mở phần **📚 Xem context đã trích xuất** dưới câu trả lời của AI để kiểm tra các đoạn văn bản đã được trích xuất từ tài liệu.
+Start the Streamlit application:
+
+```bash
+python -m streamlit run app.py
+```
+
+The application will be available at:
+
+```text
+http://localhost:8501
+```
 
 ---
 
-## 📝 Đóng Góp & Giấy Phép (License & Credits)
+## 💡 Usage
 
-Dự án được phát triển nhằm mang lại giải pháp tìm kiếm và phân tích nội dung tài liệu tiếng Việt thông minh, trực quan và mạnh mẽ nhất.
+### 1. Upload Documents
 
-Mọi đóng góp, báo lỗi (issue) hoặc yêu cầu tính năng mới (pull request) đều được hoan nghênh tại repository [TimKiemNoiDung](https://github.com/trongquy1811/TimKiemNoiDung.git).
+Upload supported files such as:
+
+* PDF
+* TXT
+* Markdown
+* PNG
+* JPG / JPEG
+
+### 2. Process Documents
+
+The application extracts the document content and divides it into smaller chunks for retrieval.
+
+For image-based content, Gemini Vision can be used to analyze visual information.
+
+### 3. Ask Questions
+
+Example queries:
+
+```text
+Summarize the main content of this document.
+```
+
+```text
+What are the key points discussed in the document?
+```
+
+```text
+Find all information related to the contract.
+```
+
+```text
+Explain the information shown in this image.
+```
+
+### 4. Inspect Retrieved Context
+
+The application provides access to the retrieved document context so users can inspect the information used by the RAG pipeline to generate the answer.
+
+---
+
+## 🧩 Architecture
+
+The application separates the RAG process into several logical stages:
+
+```text
+┌──────────────────────┐
+│    Document Input    │
+│ PDF / TXT / MD/Image │
+└──────────┬───────────┘
+           ↓
+┌──────────────────────┐
+│  Document Processing │
+└──────────┬───────────┘
+           ↓
+┌──────────────────────┐
+│     Text Chunking    │
+└──────────┬───────────┘
+           ↓
+┌──────────────────────┐
+│ Gemini Embeddings    │
+└──────────┬───────────┘
+           ↓
+┌──────────────────────┐
+│     FAISS Search     │
+└──────────┬───────────┘
+           ↓
+┌──────────────────────┐
+│     LangGraph        │
+│   RAG Orchestration  │
+└──────────┬───────────┘
+           ↓
+┌──────────────────────┐
+│    Gemini LLM        │
+└──────────┬───────────┘
+           ↓
+┌──────────────────────┐
+│    Final Answer      │
+└──────────────────────┘
+```
+
+---
+
+## 🎯 Project Objectives
+
+This project was developed to explore practical applications of:
+
+* Retrieval-Augmented Generation (RAG)
+* Semantic Search
+* Large Language Models (LLMs)
+* Multimodal AI
+* Document Intelligence
+* LangChain
+* LangGraph
+* Vector Search
+
+The project also provides hands-on experience in designing an end-to-end AI application from document ingestion and retrieval to LLM-based answer generation.
+
+---
+
+## 🔮 Future Improvements
+
+Potential extensions include:
+
+* Conversational memory
+* Hybrid search combining semantic and keyword retrieval
+* Reranking models
+* Query rewriting
+* Agentic RAG
+* Tool calling
+* Multi-agent workflows
+* OCR pipelines for complex scanned documents
+* Persistent vector databases
+* Evaluation metrics for RAG quality
+
+---
+
+## 👨‍💻 Author
+
+**Nguyen Trong Quy**
+
+Computer Science | AI Engineer
+
+GitHub: [@trongquy1811](https://github.com/trongquy1811)
+
+---
+
+## 📄 License
+
+This project is intended for educational and portfolio purposes.
